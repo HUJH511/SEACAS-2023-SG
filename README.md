@@ -11,7 +11,7 @@ Team: Singapore
 
 ## Benchmark
 For runing time, exclude the time for installing independencies
-1. Baseline: 25 mins, FoM: 3758104 (ns * uW * um^2)
+1. Baseline: 25 mins, FoM: 292ns * (0.0132+0.00979)uW * 559818um^2 = 3758104 (ns * uW * um^2)
 
 
 ## Resources
