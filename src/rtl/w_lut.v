@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 module w_lut (
-   input wire [2:0] addr,
+   input wire [3:0] addr,   // Also need to increase to reach W9
    output reg [31:0] W
 );
 
