@@ -1,3 +1,11 @@
+//////////////////////////////////////////////////////////////////////////////////
+// Engineer: Amey Kulkarni
+// Design Name: Fast Fourier Transform (16-point) 
+// Module Name:    butterfly 
+// Project Name: Fast Fourier Transform (16-point)
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module butterfly #(
    parameter NBITS = 16
 )(
@@ -22,15 +30,15 @@ module butterfly #(
    // These are in 8.8 format.
    reg signed [NBITS-1:0] Ar_F;
    reg signed [NBITS-1:0] Ai_F;
-   //reg signed [NBITS-1:0] Br_F;
-   //reg signed [NBITS-1:0] Bi_F;
-   //reg signed [NBITS-1:0] Wr_F;
-   //reg signed [NBITS-1:0] Wi_F;
+   reg signed [NBITS-1:0] Br_F;
+   reg signed [NBITS-1:0] Bi_F;
+   reg signed [NBITS-1:0] Wr_F;
+   reg signed [NBITS-1:0] Wi_F;
 
    // Re-registered A values.
    // These are in 8.8 format.
-   //reg signed [NBITS-1:0] Ar_Fd2;
-  // reg signed [NBITS-1:0] Ai_Fd2;
+   reg signed [NBITS-1:0] Ar_Fd2;
+   reg signed [NBITS-1:0] Ai_Fd2;
 
    // Intermediate values used to store the product of B and W.
    // The output of the multiply is 10.22 format.
@@ -52,16 +60,9 @@ module butterfly #(
    reg signed [NBITS*2-1:0] Yr_full_F;
    reg signed [NBITS*2-1:0] Yi_full_F;
 
-   wire signed [NBITS-1:0] Br_w;
-   wire signed [NBITS-1:0] Bi_w;
-
    /****************************************************************************
     * Data Path
     ***************************************************************************/
-
-  assign Br_w = Br;
-  assign Bi_w = Bi;
-
 
    always @(*) begin
 
@@ -76,28 +77,27 @@ module butterfly #(
       // Register the inputs.
       Ar_F <= Ar;
       Ai_F <= Ai;
-      //Br_F <= Br;
-      //Bi_F <= Bi;
-      //Wr_F <= Wr;
-      //Wi_F <= Wi;
+      Br_F <= Br;
+      Bi_F <= Bi;
+      Wr_F <= Wr;
+      Wi_F <= Wi;
 
       // Re-register the A inputs.
-      //Ar_Fd2 <= Ar_F;
-      //Ai_Fd2 <= Ai_F;
+      Ar_Fd2 <= Ar_F;
+      Ai_Fd2 <= Ai_F;
 
       // Register the outputs of the multipliers. Also truncate the last two
       // bits to help meet timing.
-     
-      Zra_F <= (Br_w * Wr) >>> 2;
-      Zrb_F <= (Bi_w * Wi) >>> 2;
-      Zia_F <= (Br_w * Wi) >>> 2;
-      Zib_F <= (Bi_w * Wr) >>> 2;
+      Zra_F <= (Br_F * Wr_F) >>> 2;
+      Zrb_F <= (Bi_F * Wi_F) >>> 2;
+      Zia_F <= (Br_F * Wi_F) >>> 2;
+      Zib_F <= (Bi_F * Wr_F) >>> 2;
 
       // Compute the X and Y outputs.
-      Xr_full_F <= { {4{Ar_F[15]}}, Ar_F, {12{1'b0}} } + {Zrsub[30], Zrsub};
-      Xi_full_F <= { {4{Ai_F[15]}}, Ai_F, {12{1'b0}} } + {Ziadd[30], Ziadd};
-      Yr_full_F <= { {4{Ar_F[15]}}, Ar_F, {12{1'b0}} } - {Zrsub[30], Zrsub};
-      Yi_full_F <= { {4{Ai_F[15]}}, Ai_F, {12{1'b0}} } - {Ziadd[30], Ziadd};
+      Xr_full_F <= { {4{Ar_Fd2[15]}}, Ar_Fd2, {12{1'b0}} } + {Zrsub[30], Zrsub};
+      Xi_full_F <= { {4{Ai_Fd2[15]}}, Ai_Fd2, {12{1'b0}} } + {Ziadd[30], Ziadd};
+      Yr_full_F <= { {4{Ar_Fd2[15]}}, Ar_Fd2, {12{1'b0}} } - {Zrsub[30], Zrsub};
+      Yi_full_F <= { {4{Ai_Fd2[15]}}, Ai_Fd2, {12{1'b0}} } - {Ziadd[30], Ziadd};
 
       // Saturate and truncate to get the final output values. In the first
       // stage, the output of saturate() will be a 9.7 format number; in the
@@ -126,8 +126,8 @@ module butterfly #(
 
       // If the value is smaller than the smallest negative number that can be
       // represented by a 12.4 format number, saturate negative.
-     // else if (value < $signed(32'h80000000))
-      //   saturate = 16'h8000;
+      else if (value < $signed(32'h80000000))
+         saturate = 16'h8000;
 
       // Otherwise, return the value. This select also changes the number
       // format, shifting the decimal point to the right by one place.
