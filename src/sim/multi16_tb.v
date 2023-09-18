@@ -53,13 +53,13 @@ module multi16_tb( );
     #10 begin
       in_17bit_test = 17'b00001000100001000;
       in_8bit_test  = 8'b01111111;
-      $display("out_test")
+      $display(out_test);
     end
     
     #100 begin
       in_17bit_test = 17'b00000000100000000;
       in_8bit_test  = 8'b01111111;
-      $display("out_test")
+      $display(out_test);
     end  
     
   end
