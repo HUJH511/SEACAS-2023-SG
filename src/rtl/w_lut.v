@@ -1,3 +1,4 @@
+
 //////////////////////////////////////////////////////////////////////////////////
 // Engineer: Amey Kulkarni
 // Design Name: Fast Fourier Transform (16-point) 
@@ -6,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 module w_lut (
-   input wire [3:0] addr,   // Also need to increase to reach W9
+   input wire [2:0] addr,
    output reg [31:0] W
 );
 
@@ -22,8 +23,6 @@ module w_lut (
          5: W = {-16'd6270, -16'd15137};
          6: W = {-16'd11585, -16'd11585};
          7: W = {-16'd15137, -16'd6270};
-         8: W = {-16'd16384, 16'd0};
-         9: W = {-16'd15137, 16'd6270};
 
       endcase
 
