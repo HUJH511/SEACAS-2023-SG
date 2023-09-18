@@ -31,7 +31,7 @@
 // - Input and output are both 2's Complements.
 //
 //**********************************************************
-`include "butterfly.v"
+
 
 module butterfly_tb();
 
