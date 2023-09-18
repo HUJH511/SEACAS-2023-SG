@@ -2,11 +2,12 @@
 Team: Singapore
 
 
-## Updates
+## Objectives
 
 - [ ] Radix-4
 - [ ] Multi-16
 - [ ] Matlab Simulation
+- [ ] Add-on: IFFT
 
 
 ## Benchmark
