@@ -6,7 +6,7 @@ Team: Singapore
 - [ ] Multi-16
 - [ ] Radix-4
 - [ ] Matlab Simulation
-- [ ] parallel - serial & serial - parallel
+- [ ] Add-on: parallel - serial & serial - parallel
 - [ ] Add-on: IFFT
 
 
