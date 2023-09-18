@@ -61,6 +61,8 @@ module multi16_tb( );
       in_8bit_test  = 8'b01111111;
       $display(out_test);
     end  
+
+    #100 $stop;
     
   end
 
