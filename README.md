@@ -6,6 +6,12 @@ Team: Singapore
 
 - [ ] Radix-4
 - [ ] Multi-16
+- [ ] Matlab Simulation
+
+
+## Benchmark
+For runing time, exclude the time for installing independencies
+1. Baseline: 25 mins, FoM: 3758104 (ns * uW * um^2)
 
 
 ## Resources
