@@ -57,15 +57,13 @@ module fft_top (
     * Instantiate Modules
     ***************************************************************************/
 
-   always @(*) begin
-      if (inv == 1'b0) begin
-         temp_real = in_real;
-         temp_imag = in_imag;
-      end
-      else begin
-         temp_real = in_imag;
-         temp_imag = in_real;
-      end
+   if (inv == 1'b0) begin
+         assign temp_real = in_real;
+         assign temp_imag = in_imag;
+   end
+   else begin
+         assign temp_real = in_imag;
+         assign temp_imag = in_real;
    end
 
    fft_ctrl_sm fft_ctrl_sm_0 (
