@@ -125,7 +125,7 @@ module fft_top (
       end
       else begin
          out_push_F <= out_push;
-         out_real_F <= read_data_1[15:0];
+         out_real_F <= read_data_1[15:0] >>> 4;
          out_imag_F <= read_data_1[31:16];
       end
       
