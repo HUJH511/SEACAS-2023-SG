@@ -15,7 +15,7 @@ module fft_top (
    output reg        out_push_F,
    output reg [15:0] out_real_F,
    output reg [15:0] out_imag_F,
-   input wire        inv,
+   input reg         inv,
    input wire        out_stall
 );
 
