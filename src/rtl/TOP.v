@@ -102,26 +102,27 @@ LUT LUT_int(
 .W_value_5(W_w[128+:32]),
 .W_value_6(W_w[160+:32]),
 .W_value_7(W_w[192+:32]),
-.W_value_8(W_w[224+:32]),
+.W_value_8(W_w[224+:32])
 );
 
 
 genvar i;
 
-for (i = 0; i < N ; i = i + 1) begin
-	butterfly buy (.clk(clk), 
-			.Ar(A_w[(i*16+15)+:16]),
-			.Ai(A_w[(i*16)+:16]),   
-                        .Br(B_w[(i*16+15)+:16]),
-                        .Bi(B_w[(i*16)+:16]),
-                        .Wr(W_w[(i*16+15)+:16]),
-                        .Wi(W_w[(i*16)+:16]),
-			.Xr_F(X_w[(i*16+15)+:16]),
-                        .Xi_F(X_w[(i*16)+:16]),
-			.Yr_F(Y_w[(i*16+15)+:16]),
-	                .Yi_F(Y_w[(i*16)+:16])
-			);
-end
-
+generate 
+        for (i = 0; i < N ; i = i + 1) begin
+                butterfly buy (.clk(clk), 
+                                .Ar(A_w[(i*16+15)+:16]),
+                                .Ai(A_w[(i*16)+:16]),   
+                                .Br(B_w[(i*16+15)+:16]),
+                                .Bi(B_w[(i*16)+:16]),
+                                .Wr(W_w[(i*16+15)+:16]),
+                                .Wi(W_w[(i*16)+:16]),
+                                .Xr_F(X_w[(i*16+15)+:16]),
+                                .Xi_F(X_w[(i*16)+:16]),
+                                .Yr_F(Y_w[(i*16+15)+:16]),
+                                .Yi_F(Y_w[(i*16)+:16])
+                                );
+        end
+endgenerate
 
 endmodule
