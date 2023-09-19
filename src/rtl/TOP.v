@@ -15,7 +15,7 @@ output wire [31:0]  data_out
 
 
 wire [N*M*2-1:0] A_w, B_w, X_w, Y_w, W_w;
-
+wire [3:0] addr_1, addr_2, addr_3, addr_4, addr_5, addr_6, addr_7, addr_8, addr_9, addr_10, addr_11, addr_12, addr_13, addr_14, addr_15,addr_16;
 
 input_buffer ib (
      .read_address(read_address),
@@ -40,22 +40,22 @@ input_buffer ib (
      .write_enable(write_enable),  // Write enable
      .write_back(write_back),    // Write back from BUTTERFLY
      .data_in(data_in),       // Input data (32 bits)
-     .data_in_1(A_w[0+:32]),
-     .data_in_2(B_w[0+:32]),
-     .data_in_3(A_w[32+:32]),
-     .data_in_4(B_w[32+:32]),
-     .data_in_5(A_w[64+:32]),
-     .data_in_6(B_w[64+:32]),
-     .data_in_7(A_w[96+:32]),
-     .data_in_8(B_w[96+:32]),
-     .data_in_9(A_w[128+:32]),
-     .data_in_10(B_w[128+:32]),
-     .data_in_11(A_w[160+:32]),
-     .data_in_12(B_w[160+:32]),
-     .data_in_13(A_w[192+:32]),
-     .data_in_14(B_w[192+:32]),
-     .data_in_15(A_w[224+:32]),
-     .data_in_16(B_w[224+:32]),
+     .data_in_1(X_w[0+:32]),
+     .data_in_2(Y_w[0+:32]),
+     .data_in_3(X_w[32+:32]),
+     .data_in_4(Y_w[32+:32]),
+     .data_in_5(X_w[64+:32]),
+     .data_in_6(Y_w[64+:32]),
+     .data_in_7(X_w[96+:32]),
+     .data_in_8(Y_w[96+:32]),
+     .data_in_9(X_w[128+:32]),
+     .data_in_10(Y_w[128+:32]),
+     .data_in_11(X_w[160+:32]),
+     .data_in_12(Y_w[160+:32]),
+     .data_in_13(X_w[192+:32]),
+     .data_in_14(Y_w[192+:32]),
+     .data_in_15(X_w[224+:32]),
+     .data_in_16(Y_w[224+:32]),
      .data_out_1(A_w[0+:32]),
      .data_out_2(B_w[0+:32]),
      .data_out_3(A_w[32+:32]),
@@ -107,22 +107,21 @@ LUT LUT_int(
 
 
 genvar i;
-
-generate 
-        for (i = 0; i < N ; i = i + 1) begin
-                butterfly buy (.clk(clk), 
-                                .Ar(A_w[(i*16+15)+:16]),
-                                .Ai(A_w[(i*16)+:16]),   
-                                .Br(B_w[(i*16+15)+:16]),
-                                .Bi(B_w[(i*16)+:16]),
-                                .Wr(W_w[(i*16+15)+:16]),
-                                .Wi(W_w[(i*16)+:16]),
-                                .Xr_F(X_w[(i*16+15)+:16]),
-                                .Xi_F(X_w[(i*16)+:16]),
-                                .Yr_F(Y_w[(i*16+15)+:16]),
-                                .Yi_F(Y_w[(i*16)+:16])
-                                );
-        end
+generate
+	for (i = 0; i < N ; i = i + 1) begin
+		butterfly buy (.clk(clk), 
+				.Ar(A_w[(i*16+15)+:16]),
+				.Ai(A_w[(i*16)+:16]),   
+	                        .Br(B_w[(i*16+15)+:16]),
+	                        .Bi(B_w[(i*16)+:16]),
+	                        .Wr(W_w[(i*16+15)+:16]),
+	                        .Wi(W_w[(i*16)+:16]),
+				.Xr_F(X_w[(i*16+15)+:16]),
+	                        .Xi_F(X_w[(i*16)+:16]),
+				.Yr_F(Y_w[(i*16+15)+:16]),
+		                .Yi_F(Y_w[(i*16)+:16])
+				);
+	end
 endgenerate
 
 endmodule
