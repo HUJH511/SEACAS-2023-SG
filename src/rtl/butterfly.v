@@ -1,3 +1,11 @@
+//////////////////////////////////////////////////////////////////////////////////
+// Engineer: Amey Kulkarni
+// Design Name: Fast Fourier Transform (16-point) 
+// Module Name:    butterfly 
+// Project Name: Fast Fourier Transform (16-point)
+//////////////////////////////////////////////////////////////////////////////////
+
+
 module butterfly #(
    parameter NBITS = 16
 )(
@@ -35,22 +43,22 @@ module butterfly #(
    // Intermediate values used to store the product of B and W.
    // The output of the multiply is 10.22 format.
    // These are in 10.20 format because the final two bits are truncated.
-   reg signed [NBITS-1:0] Zra_F;
-   reg signed [NBITS-1:0] Zrb_F;
-   reg signed [NBITS-1:0] Zia_F;
-   reg signed [NBITS-1:0] Zib_F;
+   reg signed [NBITS*2-3:0] Zra_F;
+   reg signed [NBITS*2-3:0] Zrb_F;
+   reg signed [NBITS*2-3:0] Zia_F;
+   reg signed [NBITS*2-3:0] Zib_F;
 
    // Intermediate values used to store partial output sums.
    // These are in 11.20 format.
-   reg signed [NBITS+1:0] Zrsub;
-   reg signed [NBITS+1:0] Ziadd;
+   reg signed [NBITS*2-2:0] Zrsub;
+   reg signed [NBITS*2-2:0] Ziadd;
 
    // Intermediate values used to store the pre-saturated X and Y values.
-   // These are in 12.20 format. 18-bit
-   reg signed [NBITS+2:0] Xr_full_F;
-   reg signed [NBITS+2:0] Xi_full_F;
-   reg signed [NBITS+2:0] Yr_full_F;
-   reg signed [NBITS+2:0] Yi_full_F;
+   // These are in 12.20 format.
+   reg signed [NBITS*2-1:0] Xr_full_F;
+   reg signed [NBITS*2-1:0] Xi_full_F;
+   reg signed [NBITS*2-1:0] Yr_full_F;
+   reg signed [NBITS*2-1:0] Yi_full_F;
 
    /****************************************************************************
     * Data Path
@@ -58,9 +66,9 @@ module butterfly #(
 
    always @(*) begin
 
-      // Compute the first portion of the X and Y outputs. 18-bit.
-      Zrsub = ({Zra_F[15], Zra_F} - {Zrb_F[15], Zrb_F});
-      Ziadd = ({Zia_F[15], Zia_F} + {Zib_F[15], Zib_F});
+      // Compute the first portion of the X and Y outputs.
+      Zrsub = ({Zra_F[29], Zra_F} - {Zrb_F[29], Zrb_F});
+      Ziadd = ({Zia_F[29], Zia_F} + {Zib_F[29], Zib_F});
 
    end
 
@@ -79,17 +87,17 @@ module butterfly #(
       Ai_Fd2 <= Ai_F;
 
       // Register the outputs of the multipliers. Also truncate the last two
-      // bits to help meet timing. Truncate to 16-bit;
-      Zra_F <= (Br_F * Wr_F) >>> 16;
-      Zrb_F <= (Bi_F * Wi_F) >>> 16;
-      Zia_F <= (Br_F * Wi_F) >>> 16;
-      Zib_F <= (Bi_F * Wr_F) >>> 16;
+      // bits to help meet timing.
+      Zra_F <= (Br_F * Wr_F) >>> 2;
+      Zrb_F <= (Bi_F * Wi_F) >>> 2;
+      Zia_F <= (Br_F * Wi_F) >>> 2;
+      Zib_F <= (Bi_F * Wr_F) >>> 2;
 
-      // Compute the X and Y outputs. 20-bit.
-      Xr_full_F <= { 3{Ar_Fd2[15]}, Ar_Fd2 } + {Zrsub[17], Zrsub};
-      Xi_full_F <= { 3{Ai_Fd2[15]}, Ai_Fd2 } + {Ziadd[17], Ziadd};
-      Yr_full_F <= { 3{Ar_Fd2[15]}, Ar_Fd2 } - {Zrsub[17], Zrsub};
-      Yi_full_F <= { 3{Ai_Fd2[15]}, Ai_Fd2 } - {Ziadd[17], Ziadd};
+      // Compute the X and Y outputs.
+      Xr_full_F <= { {4{Ar_Fd2[15]}}, Ar_Fd2, {12{1'b0}} } + {Zrsub[30], Zrsub};
+      Xi_full_F <= { {4{Ai_Fd2[15]}}, Ai_Fd2, {12{1'b0}} } + {Ziadd[30], Ziadd};
+      Yr_full_F <= { {4{Ar_Fd2[15]}}, Ar_Fd2, {12{1'b0}} } - {Zrsub[30], Zrsub};
+      Yi_full_F <= { {4{Ai_Fd2[15]}}, Ai_Fd2, {12{1'b0}} } - {Ziadd[30], Ziadd};
 
       // Saturate and truncate to get the final output values. In the first
       // stage, the output of saturate() will be a 9.7 format number; in the
@@ -108,23 +116,23 @@ module butterfly #(
     ***************************************************************************/
 
    function signed [15:0] saturate(
-      input signed [19:0] value
+      input signed [31:0] value
    );
 
       // If the value is greater than the largest positive number that can be
       // represented by a 12.4 format number, saturate positive.
-      if (value > $signed(19'h3ffff))
+      if (value > $signed(32'h7fff0000))
          saturate = 16'h7fff;
 
       // If the value is smaller than the smallest negative number that can be
       // represented by a 12.4 format number, saturate negative.
-      //else if (value < $signed(32'h80000000))
-       //  saturate = 16'h8000;
+      else if (value < $signed(32'h80000000))
+         saturate = 16'h8000;
 
       // Otherwise, return the value. This select also changes the number
       // format, shifting the decimal point to the right by one place.
       else
-         saturate = value[17:2];
+         saturate = value[28:13];
 
    endfunction
 
