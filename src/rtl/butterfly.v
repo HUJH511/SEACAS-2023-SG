@@ -108,12 +108,12 @@ module butterfly #(
     ***************************************************************************/
 
    function signed [15:0] saturate(
-      input signed [19:0] value
+      input signed [18:0] value
    );
 
       // If the value is greater than the largest positive number that can be
       // represented by a 12.4 format number, saturate positive.
-      if (value > $signed(19'h3ffff))
+      if (value > $signed(18'h1ffff))
          saturate = 16'h7fff;
 
       // If the value is smaller than the smallest negative number that can be
