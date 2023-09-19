@@ -8,7 +8,6 @@ input wire 	    write_enable,
 input wire 	    write_back,
 input wire  [3:0]   read_address,
 input wire  [3:0]   write_address,
-input wire  [3:0]   read_address,
 input wire  [31:0]  data_in,
 output wire [31:0]  data_out
 );
