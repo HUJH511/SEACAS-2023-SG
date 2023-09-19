@@ -15,6 +15,7 @@ module fft_top (
    output reg        out_push_F,
    output reg [15:0] out_real_F,
    output reg [15:0] out_imag_F,
+   input wire        inv,
    input wire        out_stall
 );
 
@@ -43,6 +44,9 @@ module fft_top (
 
    wire        out_push;
 
+   wire [15:0] temp_real;
+   wire [15:0] temp_imag;
+
    /****************************************************************************
     * Continuous Assignments
     ***************************************************************************/
@@ -53,12 +57,23 @@ module fft_top (
     * Instantiate Modules
     ***************************************************************************/
 
+   always @(*) begin
+      if (inv == 1'b0) begin
+         temp_real = in_real;
+         temp_imag = in_imag;
+      end
+      else begin
+         temp_real = in_imag;
+         temp_imag = in_real;
+      end
+   end
+
    fft_ctrl_sm fft_ctrl_sm_0 (
       .clk             (clk),
       .reset           (reset),
       .in_push         (in_push),
-      .in_real         (in_real),
-      .in_imag         (in_imag),
+      .in_real         (temp_real),
+      .in_imag         (temp_imag),
       .in_stall_F      (in_stall),
       .read_addr_1_F   (read_addr_1),
       .read_addr_2_F   (read_addr_2),
@@ -111,9 +126,17 @@ module fft_top (
     ***************************************************************************/
 
    always @(posedge clk) begin
-      out_push_F <= out_push;
-      out_real_F <= read_data_1[31:16];
-      out_imag_F <= read_data_1[15:0];
+      if (inv == 1'b0) begin
+         out_push_F <= out_push;
+         out_real_F <= read_data_1[31:16];
+         out_imag_F <= read_data_1[15:0];
+      end
+      else begin
+         out_push_F <= out_push;
+         out_real_F <= read_data_1[15:0];
+         out_imag_F <= read_data_1[31:16];
+      end
+      
    end
 
 endmodule
