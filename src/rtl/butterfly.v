@@ -86,10 +86,10 @@ module butterfly #(
       Zib_F <= (Bi_F * Wr_F) >>> 16;
 
       // Compute the X and Y outputs. 20-bit.
-      Xr_full_F <= { 3{Ar_Fd2[15]}, Ar_Fd2 } + {Zrsub[17], Zrsub};
-      Xi_full_F <= { 3{Ai_Fd2[15]}, Ai_Fd2 } + {Ziadd[17], Ziadd};
-      Yr_full_F <= { 3{Ar_Fd2[15]}, Ar_Fd2 } - {Zrsub[17], Zrsub};
-      Yi_full_F <= { 3{Ai_Fd2[15]}, Ai_Fd2 } - {Ziadd[17], Ziadd};
+      Xr_full_F <= { {3{Ar_Fd2[15]}}, Ar_Fd2 } + {Zrsub[17], Zrsub};
+      Xi_full_F <= { {3{Ai_Fd2[15]}}, Ai_Fd2 } + {Ziadd[17], Ziadd};
+      Yr_full_F <= { {3{Ar_Fd2[15]}}, Ar_Fd2 } - {Zrsub[17], Zrsub};
+      Yi_full_F <= { {3{Ai_Fd2[15]}}, Ai_Fd2 } - {Ziadd[17], Ziadd};
 
       // Saturate and truncate to get the final output values. In the first
       // stage, the output of saturate() will be a 9.7 format number; in the
